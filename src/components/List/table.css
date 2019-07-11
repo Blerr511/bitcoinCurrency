@@ -2,6 +2,10 @@
     overflow-x: auto; /* Needed for table to be responsive */
 
   }
+  .Table-container a{
+    text-decoration: none;
+    color: #9cb3c9;
+  }
   
   .Table {
     width: 100%;

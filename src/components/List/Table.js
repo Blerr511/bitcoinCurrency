@@ -1,44 +1,13 @@
 import React from 'react';
-import { helper } from '../../Helper';
-import {renderChangeProcent} from '../renderChangeProcent';
-import {API_URL} from '../config/Config';
 import './table.css';
-class List extends React.Component {
-    constructor() {
-        super();
-        this.state = {
-            loading: false,
-            currencies: [],
-            error: null,
-        }
-    }
-    componentDidMount() {
-        this.setState({
-            loading: true
-        })
-        fetch(`${API_URL}/cryptocurrencies?page=1&perPage=20`)
-            .then(helper)
-            .then(data => {
-                this.setState({
-                    currencies: data.currencies,
-                    loading: false,
-                });
-            })
-    }
-    render() {
-        const { loading, currencies } = this.state;
-
-        if (loading) {
-            return (
-                <div>
-                    Loading............
-        </div>
-            )
-        }
-        return (
-            <div>
-          
-                <table>
+import Pagination from './Pagination';
+import {renderChangeProcent} from '../renderChangeProcent';
+import {Link} from 'react-router-dom';
+const Table = props=>{
+    const currencies = props.currencies;
+    return (
+        <div>
+              <table>
                     <thead className='Table-head'>
                         <tr>
                             <th><p>Rank</p> </th>
@@ -56,7 +25,7 @@ class List extends React.Component {
                                        <td><span className="Table-rank">
                                             {currency.rank}
                                         </span></td>
-                                        <td> <span>{currency.name}</span></td>
+                                        <td> <span><Link to={"/currency/"+currency.id}>{currency.name}</Link></span></td>
                                         <td><span className="Table-dollar">{currency.price+" $"}</span></td>
                                         <td><span className="Table-dollar">{currency.marketCap+' $'}</span></td>
                                         <td>{renderChangeProcent(currency.percentChange24h)}</td>
@@ -66,10 +35,18 @@ class List extends React.Component {
                         }
                     </tbody>
                 </table>
-            </div>
-        )
-    }
+                        
+                <Pagination
+                
+                 switchPage = {props.switchPage} 
 
+                 currentPage = {props.currentPage}
+
+                 totalPage = {props.totalPage}
+                />
+                
+        </div>
+    )
 }
 
-export default List;
+export default Table;
