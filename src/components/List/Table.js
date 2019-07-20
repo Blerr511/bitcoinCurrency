@@ -1,10 +1,13 @@
 import React from 'react';
-import './table.css';
 import Pagination from './Pagination';
 import {renderChangeProcent} from '../renderChangeProcent';
-import {Link} from 'react-router-dom';
+import {withRouter} from 'react-router-dom';
+import PropTypes from 'prop-types';
+import './table.css';
+
 const Table = props=>{
     const currencies = props.currencies;
+    const history = props.history;
     return (
         <div>
               <table>
@@ -21,11 +24,11 @@ const Table = props=>{
                         {
                             currencies.map((currency, id) => {
                                 return (
-                                    <tr key={currency.id} className='Table-container'>
+                                    <tr key={currency.id} className='Table-container' onClick = {()=>history.push('/currency/'+currency.id)}  >
                                        <td><span className="Table-rank">
                                             {currency.rank}
                                         </span></td>
-                                        <td> <span><Link to={"/currency/"+currency.id}>{currency.name}</Link></span></td>
+                                        <td> <span>{currency.name}</span></td>
                                         <td><span className="Table-dollar">{currency.price+" $"}</span></td>
                                         <td><span className="Table-dollar">{currency.marketCap+' $'}</span></td>
                                         <td>{renderChangeProcent(currency.percentChange24h)}</td>
@@ -49,4 +52,4 @@ const Table = props=>{
     )
 }
 
-export default Table;
+export default withRouter(Table);

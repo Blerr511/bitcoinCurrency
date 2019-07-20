@@ -1,6 +1,7 @@
 import React from 'react';
 import Table from './Table';
 import { helper } from '../../Helper';
+import Loading from '../common/loading/Loading';
 import {API_URL} from '../config/Config';
 class List extends React.Component {
     constructor() {
@@ -65,11 +66,11 @@ class List extends React.Component {
     }
     render() {
         const { loading, currencies, error } = this.state;
-        if (loading) {
+        if(loading) {
             return (
-                <div>
-                    Loading............
-        </div>
+                <div className="loading-container">
+                   <Loading />
+                </div>
             )
         }
         return (

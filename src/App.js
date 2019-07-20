@@ -4,7 +4,6 @@ import List from './components/List/List';
 import {BrowserRouter,Route,Switch} from 'react-router-dom';
 import NotFound from './components/notFound/NotFound';
 import Detal from './components/detal/Detal';
-
 const App = () => {
     
     return (
@@ -12,10 +11,10 @@ const App = () => {
             <BrowserRouter>             
             <Header />
             <div  style={{display:'flex',justifyContent:'center'}}>
-            <Switch>
-            <Route path = "/currency/:id" component = {p=><div><List/><Detal id = {p.match.params.id} /></div>} />
-            
+            <Switch>            
             <Route path = "/" exact component = {List} />
+            <Route exact  path = "/currency/:id" exact component = {(e)=><Detal currency={e.match.params.id} />} />
+
             <Route component = {NotFound}/>
             </Switch>
             </div>

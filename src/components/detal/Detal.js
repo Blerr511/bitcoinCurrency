@@ -1,89 +1,90 @@
 import React from 'react';
+import {renderChangeProcent} from '../renderChangeProcent';
 import {API_URL} from '../config/Config';
-import './detal.css'
+import Loading from '../common/loading/Loading';
+import {withRouter} from 'react-router-dom';
+import './detal.css';
+
 class Detal extends React.Component{
     constructor(props){
         super();
-        this.state = {
-            id:props.id,
-            name:"",
-            symbol:"",
-            rank:"",
-            percentChange24h:"",
-            price:"",
-            marketCap:"",
-            volume24h:"",
-            totalSupply:""
+        this.state= {
+
+            data:{
+                name:null,
+            symbol:null,
+            price:null,
+            rank:null,
+            percentChange24h:null,
+            marketCap:null,
+            volume24h:null,
+            totalSupply:null
+            },
+            loading:true,
+            propsCurrency:props.currency
         }
     }
-    componentDidMount = ()=>{
-        fetch(`${API_URL}/cryptocurrencies/${this.state.id}`)
+
+    fetchThis(c){
+        fetch(`${API_URL}/cryptocurrencies/${c}`)
         .then(data=>data.json())
-        .then(data=>{
-            
-            this.setState({
-                name:data.name,
-                symbol:data.symbol,
-                rank:data.rank,
-                percentChange24h:data.percentChange24h,
-                price:data.price,
-                marketCap:data.marketCap,
-                volume24h:data.volume24h,
-                totalSupply:data.totalSupply
-            })
-        })
+        .then(data=>{this.setState({data:data,loading:false})})
+    }
+
+    componentDidMount(){
+       this.fetchThis(this.props.currency)
+    }
+    componentWillReceiveProps(newProps){
+        this.fetchThis(newProps.currency)
+
     }
     render(){
-        const {id,name,symbol,rank,percentChange24h,price,marketCap,volume24h,totalSupply} = this.state;
-        return (
-            <div style={{position:"absolute",left:200,top:0,display:"flex",justifyContent:"center"}} >
-                <div>
+        const currency = this.state.data;
+        return(
+            <div className="Detail">
+                {this.state.loading?<Loading/>:null}
+                <h1 className="Detail-heading">
+                    {currency.name} ({currency.symbol})
+                </h1>
 
-                <table>
-                    <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Symbol</th>
-                        <th>Rank</th>
-                        <th>24h change percent</th>
-                        <th>Price</th>
-                        <th>Market cap</th>
-                        <th>Volume 24h</th>
-                        <th>Price</th>
-                    </tr>
-                    </thead>
-                <tbody>
-                <tr>
-                    <td>
-                        <span>{name}</span>
-                    </td>
-                    <td>
-                       <span>{symbol}</span>
-                    </td>
-                    <td>
-                    <span>{rank}</span>
-                    </td>
-                    <td>
-                    <span>{percentChange24h}</span>
-                    </td>
-                    <td>
-                    <span>{price}</span>
-                    </td>
-                    <td> 
-                     <span>{marketCap}</span>
-                    </td>
-                    <td>
-                    <span>{volume24h}</span>
-                    </td>
-                    <td>
-                    <span>{totalSupply}</span>
-                    </td>
-                </tr>
-                </tbody>
-                </table>
+
+                <div className="Detail-container">
+
+                    <div className="Detail-item">
+                        Price <span className="Detail-value">$ {currency.price}</span>
+                    </div>
+
+                    <div className="Detail-item">
+                        Rank <span className="Detail-value">{currency.rank}</span>
+                    </div>
+
+                    <div className="Detail-item">
+                        24H Change
+                        <span className="Detail-value">{renderChangeProcent(currency.percentChange24h)}</span>
+                    </div>
+
+                    <div className="Detail-item">
+                        <span className="Detail-title">Market cap</span>
+                        <span className="Detail-dollar">$</span>
+                        {currency.marketCap}
+                    </div>
+
+                    <div className="Detail-item">
+                        <span className="Detail-title">24H Volume</span>
+                        <span className="Detail-dollar">$</span>
+                        {currency.volume24h}
+                    </div>
+
+                    <div className="Detail-item">
+                        <span className="Detail-title">Total supply</span>
+                        {currency.totalSupply}
+                    </div>
+
                 </div>
             </div>
         )
+     
     }
+    
 }
-export default Detal;
+export default withRouter(Detal);
