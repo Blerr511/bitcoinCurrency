@@ -1,8 +1,7 @@
 import React from 'react';
 import {API_URL} from '../../config/Config';
 import Loading from '../loading/Loading';
-import {Link} from 'react-router-dom';
-
+import {withRouter} from 'react-router-dom'
 import './search.css';
 
 class Search extends React.Component{
@@ -17,20 +16,26 @@ class Search extends React.Component{
         }
 
     }
+    redirect(id){
+        this.props.history.push('/currency/'+id);
+
+        this.setState({data:[],searchQuery:''});
+
+    }
     renderSharchResult(){
         if(this.state.data.length||this.state.errorMessage)
         return(
             <div className="Search-result-container">
             {   
                 this.state.data.map(el => (
-                    <Link key={el.id} to={`/currency/${el.id}`}>
-                    <div onClick={()=>{this.setState({data:[],searchQuery:''})}} className="Search-result" >
+                  //  <Link key={el.id} to={`/currency/${el.id}`}>
+                    <div onClick={()=>this.redirect(el.id)} className="Search-result" >
                         {el.name}
-                    </div></Link>
+                    </div>
+                    //</Link>
                 ))
             
             }
-            {this.state.loadgin?<Loading/>:null}
 
          
                 <div className="Search-no-result">{this.state.errorMessage}</div>
@@ -77,10 +82,12 @@ class Search extends React.Component{
                 <span className="Search-icon" >
                 </span>
                 <input value={this.state.searchQuery} className="Search-input" onChange={this.handleChange} type="text" placeholder="Curency Name" />
+                {this.state.loadgin?<Loading style={{width:'20px',height:'20px',position:'absolute',top:5,right:'25px'}}/>:null}
+
                 {this.renderSharchResult()}
             </div>
         )
     }
 }
 
-export default Search;
+export default withRouter(Search);
